@@ -1,7 +1,6 @@
 # mysite/settings.py
 
 import os
-import dj_database_url # We will install this package (already in requirements.txt)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -11,15 +10,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # Load SECRET_KEY from environment variable for production
-# For local development, you can set it in your shell or a .env file (not tracked by Git)
-SECRET_KEY = os.environ.get('SECRET_KEY', 'your-insecure-development-secret-key-12345') # IMPORTANT: Render will provide a secure one. This is a fallback for local.
+# For PythonAnywhere, you'll set this in the "Environment variables" section of your web app config.
+SECRET_KEY = os.environ.get('SECRET_KEY', 'your-insecure-development-secret-key-12345') # CHANGE THIS FOR PRODUCTION!
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG should be False in production. Use an environment variable to control it.
 DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
 # ALLOWED_HOSTS for production.
-# Add your Render.com subdomain (e.g., your-app-name.onrender.com) and any custom domains here.
+# For PythonAnywhere, add your username.pythonanywhere.com here.
 # For local development, '127.0.0.1' and 'localhost' are usually sufficient.
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
 
@@ -35,13 +34,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'news', # Your news app
     'accounts', # Your accounts app
-    # 'users', # Your users app - if you have a custom user app, uncomment this if it's your main user model
-    'whitenoise.runserver_nostatic', # For serving static files in production with WhiteNoise
+    # 'users', # Your users app - uncomment if you have a custom user app
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware', # WhiteNoise for static files
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -74,19 +71,14 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# Use dj_database_url to parse the DATABASE_URL environment variable
-# Render will automatically set DATABASE_URL for your PostgreSQL database
+# For PythonAnywhere free tier, SQLite is typically used by default.
+# If you later upgrade to a paid plan and use PostgreSQL, you'd adjust this.
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
-# Override default database with DATABASE_URL from environment if available
-DATABASE_URL = os.environ.get('DATABASE_URL')
-if DATABASE_URL:
-    DATABASES['default'] = dj_database_url.config(default=DATABASE_URL, conn_max_age=600)
 
 
 # Password validation
@@ -124,10 +116,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # Collect static files here for WhiteNoise
+# This is where Django will collect all static files when you run 'collectstatic'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static') # Changed from 'staticfiles' to 'static' for common practice
 
-# WhiteNoise configuration for compressed static files
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
