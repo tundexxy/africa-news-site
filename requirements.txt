@@ -34,3 +34,6 @@ waitress==2.1.2
 WebOb==1.8.9
 zope.deprecation==5.1
 zope.interface==7.2
+gunicorn # Added for Render deployment
+psycopg2-binary # Added for PostgreSQL database on Render
+dj-database-url # Added for parsing DATABASE_URL on Render
