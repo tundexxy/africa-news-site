@@ -1,0 +1,25 @@
+<!-- mysite/users/templates/users/login.html -->
+{% extends "news/base.html" %} {# Extend your main base template #}
+{% load crispy_forms_tags %} {# Needed for crispy forms styling #}
+
+{% block title %}Log In - BBC News Mockup{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md mt-10">
+    <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Log In</h2>
+    
+    {# Messages will be handled by base.html now #}
+
+    <form method="post">
+        {% csrf_token %} {# IMPORTANT: Django security token for forms #}
+        
+        {{ form|crispy }} {# Render the form fields using crispy forms #}
+
+        <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 font-semibold mt-4">Log In</button>
+    </form>
+
+    <p class="text-center text-sm text-gray-600 mt-6">
+        Don't have an account? <a href="{% url 'register' %}" class="text-blue-600 hover:underline">Register</a>
+    </p>
+</div>
+{% endblock %}

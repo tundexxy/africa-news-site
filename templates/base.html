@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> {# CRITICAL for mobile responsiveness #}
+    <title>{% block title %}Africa News Mockup{% endblock %}</title>
+    <!-- Tailwind CSS CDN - for easy styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter for a clean look -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* Ensure HTML and Body take full height */
+        html {
+            height: 100%;
+        }
+        body {
+            min-height: 100vh; /* Ensure body is at least viewport height */
+            margin: 0;
+            overflow-x: hidden; /* Prevent horizontal scroll, but allow vertical */
+            font-family: 'Inter', sans-serif; /* Apply Inter font globally */
+            color: #333; /* Default text color */
+            
+            /* General Body Styles - Using CSS gradient for subtle background pattern */
+            background-color: #32CD32; /* LIME GREEN - Very noticeable base color */
+            background-image: repeating-linear-gradient(
+                45deg,
+                rgba(255, 255, 255, 0.05) 0px,
+                rgba(255, 255, 255, 0.05) 2px,
+                transparent 2px,
+                transparent 20px
+            ),
+            repeating-linear-gradient(
+                -45deg,
+                rgba(255, 255, 255, 0.05) 0px,
+                rgba(255, 255, 255, 0.05) 2px,
+                transparent 2px,
+                transparent 20px
+            );
+            background-size: 40px 40px;
+            background-attachment: fixed;
+            background-position: center center;
+        }
+
+        /* Ensure main content blocks (header, main, footer) have white backgrounds for readability */
+        header, main, footer {
+            background-color: #ffffff; /* Explicitly white to stand out against body background */
+            position: relative; /* Ensure content is above other background elements */
+            z-index: 10; /* Higher z-index than body background */
+        }
+
+        /* Africa Branding Colors */
+        .africa-branding-color {
+            background-color: #006400; /* Deep Green for Africa theme */
+        }
+        .africa-text-color {
+            color: #006400; /* Deep Green for text */
+        }
+
+        /* Common Button/Link Styles */
+        .africa-nav-link {
+            padding: 0.75rem 1rem;
+            color: black;
+            font-weight: 700;
+            transition: background-color 0.2s, color 0.2s;
+            border-radius: 0.375rem;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .africa-nav-link:hover {
+            background-color: #e2e8f0;
+            color: #000;
+        }
+
+        /* News Section Specific Styles */
+        .section-title {
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #006400;
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+        .article-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s ease-in-out;
+        }
+        .article-card:hover {
+            transform: translateY(-5px);
+        }
+        .featured-article-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+        }
+        .small-article-image {
+            width: 100px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 0.25rem;
+        }
+        .sidebar-item {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .sidebar-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Specific Styles for the Blinking Live Indicator */
+        .live-indicator {
+            width: 0.6rem;
+            height: 0.6rem;
+            background-color: #FF0000;
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+
+        /* Styles for Menu/Search/Sign In buttons */
+        .menu-search-btn {
+            display: flex;
+            align-items: center;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.875rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+            transition: background-color 0.2s, color 0.2s;
+            cursor: pointer;
+        }
+        .menu-search-btn:hover {
+            background-color: #e2e8f0;
+            color: #000;
+        }
+
+        /* Styles for the Africa Text Logo */
+        .africa-text-logo {
+            font-weight: 900;
+            font-size: 1.8rem;
+            color: #006400;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: inline-block;
+        }
+
+        /* Styles for footer links on white background */
+        .footer-link {
+            color: black;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        .footer-link:hover {
+            color: #006400;
+            text-decoration: underline;
+        }
+        /* Styles for copyright text directly in the footer */
+        .footer-text {
+            color: #333;
+        }
+
+        /* Specific styles for the details/summary element in footer */
+        .footer-details summary {
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            padding-bottom: 0.5rem;
+            margin-bottom: 0.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        /* Remove default arrow in some browsers for custom styling */
+        .footer-details summary::-webkit-details-marker {
+            display: none;
+        }
+        .footer-details summary::marker {
+            display: none;
+        }
+        /* Style for the custom triangle icon */
+        .footer-details .triangle-icon {
+            font-size: 0.8em;
+            margin-left: 0.5rem;
+            transition: transform 0.2s ease-in-out;
+            display: inline-block;
+        }
+        /* Rotate the triangle when details is open */
+        .footer-details[open] .triangle-icon {
+            transform: rotate(180deg);
+        }
+
+        /* New styles for social media icons */
+        .social-icon-link {
+            color: #000;
+            transition: color 0.2s ease-in-out;
+        }
+        .social-icon-link:hover {
+            color: #006400;
+        }
+
+        /* Styles for the Country Switcher */
+        .country-switcher-container {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1000;
+        }
+        .country-switcher-button {
+            background-color: #006400;
+            color: white;
+            padding: 0.75rem;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: background-color 0.2s ease-in-out;
+        }
+        .country-switcher-button:hover {
+            background-color: #004d00;
+        }
+        .country-switcher-button svg {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+        .country-dropdown {
+            position: absolute;
+            top: calc(100% + 0.5rem);
+            right: 0;
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            min-width: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 0.5rem 0;
+            display: none;
+        }
+        .country-switcher-container.active .country-dropdown {
+            display: block;
+        }
+        .country-item {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+        }
+        .country-item:hover {
+            background-color: #f0f0f0;
+        }
+        .country-item span.flag {
+            margin-right: 0.5rem;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="bg-gray-100 shadow-md">
+        <!-- Topmost utility bar for Menu, NEWS OF AFRICA Logo, and Search/Sign In/Sign Out -->
+        {# Added responsive classes: flex-col on small screens, md:grid for larger #}
+        <div class="bg-white border-b border-gray-200 py-2">
+            <div class="container mx-auto px-4 flex flex-col md:grid md:grid-cols-3 items-center">
+                {# Left column: Menu and Search buttons - flex on small, order-1 on md #}
+                <div class="flex items-center space-x-4 justify-start w-full md:w-auto mb-2 md:mb-0 order-2 md:order-1">
+                    <!-- Menu Button -->
+                    <button class="menu-search-btn">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                        Menu
+                    </button>
+
+                    <!-- Search Button -->
+                    <button class="menu-search-btn">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        Search
+                    </button>
+                </div>
+                
+                {# Middle column: "NEWS OF AFRICA" text logo, centered - order-1 on small, order-2 on md #}
+                <div class="flex justify-center w-full md:w-auto mb-2 md:mb-0 order-1 md:order-2">
+                    <a href="{% url 'article_list' %}" class="africa-text-logo">
+                        NEWS OF AFRICA
+                    </a>
+                </div>
+                
+                {# Right column: Register/Sign In or Sign Out, right-aligned - order-3 on both #}
+                <div class="flex items-center space-x-4 justify-end w-full md:w-auto order-3">
+                    {% if user.is_authenticated %}
+                        <span class="text-gray-700 text-sm font-semibold whitespace-nowrap">Hello, {{ user.username }}!</span>
+                        <form action="{% url 'logout' %}" method="post" class="inline-block m-0 p-0">
+                            {% csrf_token %}
+                            <button type="submit" class="menu-search-btn">
+                                Sign Out
+                            </button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'register' %}" class="menu-search-btn register-btn-black">
+                            Register
+                        </a>
+                        <a href="{% url 'login' %}" class="menu-search-btn">
+                            Sign In
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Navigation Row -->
+        {# Adjusted flex-wrap for better mobile stacking, justify-center on small, md:justify-end on larger #}
+        <nav class="container mx-auto px-4 py-3 flex flex-wrap justify-center md:justify-end items-center border-t border-gray-300">
+            <ul class="flex flex-wrap justify-center gap-2 md:gap-4 text-sm w-full md:w-auto overflow-x-auto pb-2 scrollbar-hide">
+                <li><a href="{% url 'article_list' %}" class="africa-nav-link africa-text-color">Home</a></li>
+                <li><a href="#" class="africa-nav-link text-gray-700">News</a></li>
+                <li><a href="#" class="africa-nav-link text-gray-700">Sport</a></li>
+                <li><a href="#" class="africa-nav-link text-gray-700">Business</a></li>
+                <li><a href="#" class="africa-nav-link text-gray-700">Innovation</a></li>
+                <li><a href="#" class="africa-nav-link text-gray-700">Culture</a></li>
+                <li><a href="#" class="africa-nav-link text-gray-700">Arts</a></li>
+                <li><a href="#" class="africa-nav-link text-gray-700">Travel</a></li>
+                <li><a href="#" class="africa-nav-link text-gray-700">Earth</a></li>
+                <li><a href="#" class="africa-nav-link text-gray-700">Audio</a></li>
+                <li><a href="#" class="africa-nav-link text-gray-700">Video</a></li>
+                <!-- Live link with blinking indicator -->
+                <li>
+                    <a href="#" class="africa-nav-link text-gray-700">
+                        <span class="live-indicator"></span>
+                        Live
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Country Switcher Button and Dropdown -->
+    <div class="country-switcher-container" id="countrySwitcher">
+        <button class="country-switcher-button" aria-label="Select Country">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5.636 5.636a9 9 0 1 0 12.728 0M12 2v10" />
+            </svg>
+        </button>
+        <div class="country-dropdown">
+            <!-- Countries will be dynamically inserted here by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Main Content Area - This is where the specific page content will go -->
+    <main class="container mx-auto px-4 py-8">
+        {# Display messages (e.g., success or error) #}
+        {% if messages %}
+            <div class="mb-4">
+                {% for message in messages %}
+                    <div class="p-3 mb-2 rounded-md {% if message.tags == 'success' %}bg-green-100 text-green-700{% elif message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-blue-100 text-blue-700{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Display area for selected country -->
+        <div id="selectedCountryDisplay" class="text-center text-xl font-bold text-gray-800 my-8 p-4 bg-yellow-100 rounded-lg shadow-md">
+            Welcome to Africa News! Select a country to view localized content.
+        </div>
+
+        {% block content %}
+        <!-- Content from child templates (like article_list.html or article_detail.html) will be inserted here -->
+        {% endblock %}
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="bg-white text-gray-700 py-10 mt-12 border-t border-gray-200">
+        <div class="container mx-auto px-4 flex flex-col items-start">
+            <!-- Footer Top: NEWS OF AFRICA Text Logo -->
+            <div class="mb-6">
+                <a href="{% url 'article_list' %}" class="africa-text-logo">
+                    NEWS OF AFRICA
+                </a>
+            </div>
+
+            <!-- Consolidated Navigation List -->
+            {# Adjusted flex-wrap and gap for responsiveness #}
+            <div class="w-full pb-6 mb-6 border-b border-gray-300">
+                <ul class="flex flex-wrap gap-x-4 gap-y-2 text-sm">
+                    <li><a href="#" class="footer-link">Home</a></li>
+                    <li><a href="#" class="footer-link">News</a></li>
+                    <li><a href="#" class="footer-link">Sport</a></li>
+                    <li><a href="#" class="footer-link">Business</a></li>
+                    <li><a href="#" class="footer-link">Innovation</a></li>
+                    <li><a href="#" class="footer-link">Culture</a></li>
+                    <li><a href="#" class="footer-link">Arts</a></li>
+                    <li><a href="#" class="footer-link">Travel</a></li>
+                    <li><a href="#" class="footer-link">Earth</a></li>
+                    <li><a href="#" class="footer-link">Audio</a></li>
+                    <li><a href="#" class="footer-link">Video</a></li>
+                    <li><a href="#" class="footer-link">Live</a></li>
+                    <li><a href="#" class="footer-link">Weather</a></li>
+                    <li><a href="#" class="footer-link">Shop</a></li>
+                    <li><a href="#" class="footer-link">Streaming</a></li>
+                </ul>
+            </div>
+
+            <!-- "News in other languages" section -->
+            <div class="w-full pb-6 mb-6 border-b border-gray-300">
+                <details class="footer-details">
+                    <summary class="font-bold footer-heading uppercase tracking-wider text-sm">
+                        <span>News in other languages</span>
+                        <span class="triangle-icon">&#9660;</span>
+                    </summary>
+                    <ul class="flex flex-wrap gap-x-4 gap-y-2 text-sm pt-2">
+                        <li><a href="#" class="footer-link">French</a></li>
+                        <li><a href="#" class="footer-link">Swahili</a></li>
+                        <li><a href="#" class="footer-link">Arabic</a></li>
+                        <li><a href="#" class="footer-link">Portuguese</a></li>
+                        <li><a href="#" class="footer-link">Hausa</a></li>
+                        <li><a href="#" class="footer-link">Amharic</a></li>
+                    </ul>
+                </details>
+            </div>
+
+            <!-- "Follow us on:" text and social media icons -->
+            <div class="flex items-center mt-4 mb-4">
+                <p class="mr-4 footer-text">Follow us on:</p>
+                <ul class="flex space-x-4">
+                    <li><a href="https://twitter.com/bbcnews" target="_blank" class="social-icon-link">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M18.901 1.144h3.68l-8.04 9.191L24 22.812h-6.163L10.74 12.181 4.542 22.812H.858L9.006 13.52 0 1.144h6.242L11.536 7.64L18.901 1.144Zm-1.89 2.052L6.155 21.05h1.996L20.897 2.196h-1.89Z"></path>
+                        </svg>
+                    </a></li>
+                    <li><a href="https://www.facebook.com/bbcnews" target="_blank" class="social-icon-link">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M22.675 0h-21.35C.596 0 0 .596 0 1.333v21.334C0 23.404.596 24 1.333 24h11.332V14.667H9.333V11.333h3.332V8.75c0-3.291 2.008-5.086 4.945-5.086 1.411 0 2.63.105 2.971.152V6.667h-2.09c-1.653 0-1.974.786-1.974 1.94v2.726h3.947l-.64 3.334H16.55V24h6.125c.737 0 1.333-.596 1.333-1.333V1.333C24 .596 23.404 0 22.675 0Z"></path>
+                        </svg>
+                    </a></li>
+                    <li><a href="https://www.instagram.com/bbcnews/" target="_blank" class="social-icon-link">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 0c-3.216 0-3.638.012-4.898.07c-1.26.059-2.146.26-2.905.578C3.473 1.018 2.87 1.583 2.27 2.183S1.018 3.473.578 4.232c-.318.759-.519 1.645-.578 2.905C.012 8.362 0 8.784 0 12c0 3.216.012 3.638.07 4.898.059 1.26.26 2.146.578 2.905.44.759 1.005 1.36 1.605 1.96s1.204.912 1.963 1.352c.759.318 1.645.519 2.905.578C8.362 23.988 8.784 24 12 24c3.216 0 3.638-.012 4.898-.07c1.26-.059 2.146-.26 2.905-.578.759-.44 1.36-1.005 1.605-1.96s.912-1.204 1.352-1.963c.318-.759.519-1.645.578-2.905.058-1.26.07-1.682.07-4.898s-.012-3.638-.07-4.898c-.059-1.26-.26-2.146-.578-2.905-.44-.759-1.005-1.36-1.605-1.96S20.527.962 19.768.522c-.759-.318-1.645-.519-2.905-.578C15.638.012 15.216 0 12 0Zm0 2.19c3.153 0 3.55.011 4.792.068 1.157.054 1.771.246 2.164.407.41.168.68.371.99.68s.512.58.68.99c.16.393.353 1.007.407 2.164.057 1.242.068 1.639.068 4.792s-.011 3.55-.068 4.792c-.054 1.157-.246 1.771-.407 2.164-.168.41-.371.68-.68.99s-.58.512-.99.68c-.393.16-1.007.353-2.164.407-1.242.057-1.639.068-4.792.068s-3.55-.011-4.792-.068c-1.157-.054-1.771-.246-2.164-.407-.41-.168-.68-.371-.99-.68s-.512-.58-.68-.99c-.16-.393-.353-1.007-.407-2.164C2.201 15.55 2.19 15.153 2.19 12s.011-3.55.068-4.792c.054-1.157.246-1.771.407-2.164.168-.41.371-.68.68-.99s.58-.512.99-.68c-.393.16 1.007-.353 2.164-.407C8.45 2.201 8.847 2.19 12 2.19ZM12 5.835c-3.394 0-6.14 2.746-6.14 6.14s2.746 6.14 6.14 6.14 6.14-2.746 6.14-6.14-2.746-6.14-6.14-6.14Zm0 10.14c-2.203 0-3.99-1.787-3.99-3.99S9.797 8.015 12 8.015s3.99 1.787 3.99 3.99-1.787 3.99-3.99 3.99Zm6.398-10.985c0 .762-.617 1.38-.99 1.38s-.99-.617-.99-1.38c0-.763.617-1.38.99-1.38s.99.617.99 1.38Z"></path>
+                        </svg>
+                    </a></li>
+                </ul>
+            </div>
+
+            <!-- Footer Bottom: Copyright & Regulatory Info -->
+            <div class="pt-4 w-full">
+                <p class="mb-2 footer-text">
+                    &copy; 2025 Africa News. This website is a mockup for educational purposes only and is not affiliated with any specific news organization. All rights reserved.
+                    <a href="#" class="text-blue-600 hover:underline">Read about our approach to external linking.</a>
+                </p>
+                <p class="footer-text">All content is for demonstration purposes only.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const countrySwitcher = document.getElementById('countrySwitcher');
+            const countryDropdown = countrySwitcher.querySelector('.country-dropdown');
+            const countryButton = countrySwitcher.querySelector('.country-switcher-button');
+            const selectedCountryDisplay = document.getElementById('selectedCountryDisplay');
+
+            // List of African Countries with their flag emojis
+            const africanCountries = [
+                { name: "Algeria", flag: "🇩🇿" }, { name: "Angola", flag: "🇦🇴" },
+                { name: "Benin", flag: "🇧🇯" }, { name: "Botswana", flag: "🇧🇼" },
+                { name: "Burkina Faso", flag: "🇧🇫" }, { name: "Burundi", flag: "🇧🇮" },
+                { name: "Cabo Verde", flag: "🇨🇻" }, { name: "Cameroon", flag: "🇨🇲" },
+                { name: "Central African Republic", flag: "🇨🇫" }, { name: "Chad", flag: "🇹🇩" },
+                { name: "Comoros", flag: "🇰🇲" }, { name: "Congo (Brazzaville)", flag: "🇨🇬" },
+                { name: "Congo (Kinshasa)", flag: "🇨🇩" }, { name: "Côte d'Ivoire", flag: "🇨🇮" },
+                { name: "Djibouti", flag: "🇩🇯" }, { name: "Egypt", flag: "🇪🇬" },
+                { name: "Equatorial Guinea", flag: "🇬🇶" }, { name: "Eritrea", flag: "🇪🇷" },
+                { name: "Eswatini", flag: "🇸🇿" }, { name: "Ethiopia", flag: "🇪🇹" },
+                { name: "Gabon", flag: "🇬🇦" }, { name: "Gambia", flag: "🇬🇲" },
+                { name: "Ghana", flag: "🇬🇭" }, { name: "Guinea", flag: "🇬🇳" },
+                { name: "Guinea-Bissau", flag: "🇬🇼" }, { name: "Kenya", flag: "🇰🇪" },
+                { name: "Lesotho", flag: "🇱🇸" }, { name: "Liberia", flag: "🇱🇷" },
+                { name: "Libya", flag: "🇱🇾" }, { name: "Madagascar", flag: "🇲🇬" },
+                { name: "Malawi", flag: "🇲🇼" }, { name: "Mali", flag: "🇲🇱" },
+                { name: "Mauritania", flag: "🇲🇷" }, { name: "Mauritius", flag: "🇲🇺" },
+                { name: "Morocco", flag: "🇲🇦" }, { name: "Mozambique", flag: "🇲🇿" },
+                { name: "Namibia", flag: "🇳🇦" }, { name: "Niger", flag: "🇳🇪" },
+                { name: "Nigeria", flag: "🇳🇬" }, { name: "Rwanda", flag: "🇷🇼" },
+                { name: "Sao Tome and Principe", flag: "🇸🇹" }, { name: "Senegal", flag: "🇸🇳" },
+                { name: "Seychelles", flag: "🇸🇨" }, { name: "Sierra Leone", flag: "🇸🇱" },
+                { name: "Somalia", flag: "🇸🇴" }, { name: "South Africa", flag: "🇿🇦" },
+                { name: "South Sudan", flag: "🇸🇸" }, { name: "Sudan", flag: "🇸🇩" },
+                { name: "Tanzania", flag: "🇹🇿" }, { name: "Togo", flag: "🇹🇬" },
+                { name: "Tunisia", flag: "🇹🇳" }, { name: "Uganda", flag: "🇺🇬" },
+                { name: "Zambia", flag: "🇿🇲" }, { name: "Zimbabwe", flag: "🇿🇼" }
+            ];
+
+            // Populate the dropdown with countries
+            africanCountries.forEach(country => {
+                const countryItem = document.createElement('div');
+                countryItem.classList.add('country-item');
+                countryItem.innerHTML = `<span class="flag">${country.flag}</span> ${country.name}`;
+                countryItem.dataset.countryName = country.name; // Store name for easy access
+                countryDropdown.appendChild(countryItem);
+            });
+
+            // Toggle dropdown visibility
+            countryButton.addEventListener('click', function() {
+                countrySwitcher.classList.toggle('active');
+            });
+
+            // Handle country selection
+            countryDropdown.addEventListener('click', function(event) {
+                const selectedItem = event.target.closest('.country-item');
+                if (selectedItem) {
+                    const countryName = selectedItem.dataset.countryName;
+                    selectedCountryDisplay.textContent = `Now viewing content for: ${countryName}`;
+                    countrySwitcher.classList.remove('active'); // Close dropdown after selection
+                }
+            });
+
+            // Close dropdown if clicked outside
+            document.addEventListener('click', function(event) {
+                if (!countrySwitcher.contains(event.target)) {
+                    countrySwitcher.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
